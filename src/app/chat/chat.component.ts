@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from './chat.service';
 import { Observable } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { scan, tap, startWith } from 'rxjs/operators';
 import { ChatMessage } from './chat-message.interface';
+import { NgForageCache } from 'ngforage';
 
 @Component({
   selector: 'app-chat',
@@ -13,15 +14,21 @@ export class ChatComponent implements OnInit {
   public messageText = '';
   public messages$: Observable<ChatMessage[]>;
 
-  constructor(private chatService: ChatService) { }
+  constructor(private chatService: ChatService, private ngForageCache: NgForageCache) { }
 
-  ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
+    const initialMessages: ChatMessage[] = await this.ngForageCache.getItem('messages') ?? [];
+
     this.messages$ = this.chatService.message$.pipe(
       // scan((message: ChatMessage[], message: ChatMessage) => [...messages, message], []),
       scan((messages: ChatMessage[], message: ChatMessage) => {
         messages.push(message);
         return messages;
-      }, []), //scan podobny do reduce
+      }, initialMessages), //scan podobny do reduce
+      tap(async (messages: ChatMessage[]) => {
+        await this.ngForageCache.setItem('messages', messages);
+      }),
+      startWith(initialMessages),
     );
   }
 
@@ -30,7 +37,7 @@ export class ChatComponent implements OnInit {
     if(text){
       this.chatService.send({
         text, //shorthand 
-        authorId: 'Ernest'              
+        authorId: 'Ernest',              
       });
 
       this.messageText = '';
