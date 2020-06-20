@@ -1,1 +1,10 @@
-<p>home works!</p>
+<h1>Todos</h1>
+
+<div *ngFor="let todo of todos$ | async">
+    <input type="checkbox" [checked]="todo.done">{{ todo.text}}
+</div>
+
+<div>
+    <input type="text" [(ngModel)]="newTodo"/>
+    <button (click)="addTodo()">Add</button>
+</div>

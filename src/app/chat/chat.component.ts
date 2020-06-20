@@ -6,6 +6,7 @@ import { ChatMessage } from './chat-message.interface';
 import { NgForageCache } from 'ngforage';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-chat',
@@ -18,10 +19,17 @@ export class ChatComponent implements OnInit {
   public authorId: string;
   
 
-  constructor(private chatService: ChatService, private ngForageCache: NgForageCache, private fireAuth: AngularFireAuth, private router: Router) { }
+  constructor(
+    private chatService: ChatService, 
+    private ngForageCache: NgForageCache, 
+    private fireAuth: AngularFireAuth, 
+    private router: Router,
+    private firestore: AngularFirestore) { }
 
   public async ngOnInit(): Promise<void> {
     const initialMessages: ChatMessage[] = await this.ngForageCache.getItem('messages') ?? [];
+
+    // const initialMessages: ChatMessage[] = await this.firestore.collection<ChatMessage>('messages').valueChanges().toPromise();
 
     this.messages$ = this.chatService.message$.pipe(
       // scan((message: ChatMessage[], message: ChatMessage) => [...messages, message], []),
