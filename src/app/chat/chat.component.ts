@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { scan, tap, startWith } from 'rxjs/operators';
 import { ChatMessage } from './chat-message.interface';
 import { NgForageCache } from 'ngforage';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -13,8 +15,10 @@ import { NgForageCache } from 'ngforage';
 export class ChatComponent implements OnInit {
   public messageText = '';
   public messages$: Observable<ChatMessage[]>;
+  public authorId: string;
+  
 
-  constructor(private chatService: ChatService, private ngForageCache: NgForageCache) { }
+  constructor(private chatService: ChatService, private ngForageCache: NgForageCache, private fireAuth: AngularFireAuth, private router: Router) { }
 
   public async ngOnInit(): Promise<void> {
     const initialMessages: ChatMessage[] = await this.ngForageCache.getItem('messages') ?? [];
@@ -30,14 +34,21 @@ export class ChatComponent implements OnInit {
       }),
       startWith(initialMessages),
     );
+
+    this.fireAuth.user.subscribe((user: firebase.User) => {
+      this.authorId = user?.email;   
+      if(user === null){
+        this.router.navigateByUrl('');
+      }   
+    })
   }
 
   public send(){
     const text = this.messageText.trim();
-    if(text){
+    if(text && this.authorId){
       this.chatService.send({
-        text, //shorthand 
-        authorId: 'Ernest',              
+        text, //shorthand (to samo co text: text,)
+        authorId: this.authorId,              
       });
 
       this.messageText = '';

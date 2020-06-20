@@ -3,4 +3,16 @@
     <a routerLink="chat">Chat</a>
 </nav>
 
+<div>
+    <div *ngIf="user$ | async as user; else showLogin">
+        <button (click)="logout()">Log out {{user.email}}</button>
+    </div>
+    <ng-template #showLogin>
+        <button (click)="login()">Sign in with Google</button>
+    </ng-template>
+</div>
+
+
+
+
 <router-outlet></router-outlet>

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "my-project-1536923784642"
+  },
+  "targets": {
+    "my-project-1536923784642": {
+      "hosting": {
+        "angular-project": [
+          "my-project-1536923784642"
+        ]
+      }
+    }
+  }
+}

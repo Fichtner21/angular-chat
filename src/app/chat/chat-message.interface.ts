@@ -1,5 +1,5 @@
 export interface ChatMessage {
-    autohorId: string;
+    authorId: string;
     text: string;
     timestamp?: number;
     id?: string;
