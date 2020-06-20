@@ -8,8 +8,8 @@ export const NGFORAGE_CONFIG_PROVIDER: ValueProvider = {
     description: 'Entries cached by ngforage',
     driver: [
       Driver.INDEXED_DB,   
-       Driver.LOCAL_STORAGE,          
-       Driver.WEB_SQL
+      Driver.LOCAL_STORAGE,          
+      Driver.WEB_SQL
     ],
     name: 'ChatNgForage',
     storeName: 'ChatNgForageStore'
