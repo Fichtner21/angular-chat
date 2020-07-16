@@ -1,10 +1,22 @@
 <h1>Todos</h1>
 
 <div *ngFor="let todo of todos$ | async">
-    <input type="checkbox" [checked]="todo.done">{{ todo.text}}
+  <input
+    #checkbox
+    (click)="setDone(todo, checkbox.checked)"
+    type="checkbox"
+    [checked]="todo.done"
+  />
+  {{ todo.text }}
+  <button (click)="deleteTodo(todo)">delete</button>
 </div>
 
 <div>
-    <input type="text" [(ngModel)]="newTodo"/>
-    <button (click)="addTodo()">Add</button>
+  <input #newTodo type="text" />
+  <button
+    (click)="addTodo(newTodo.value); newTodo.value = ''"
+    placeholder="Enter new todo text…"
+  >
+    Add
+  </button>
 </div>
